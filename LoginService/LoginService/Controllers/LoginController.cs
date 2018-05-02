@@ -95,11 +95,11 @@ namespace LoginService.Controllers
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddMinutes(Convert.ToDouble(Environment.GetEnvironmentVariable("JwtExpireMinutes")));
+            var expires = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["JwtExpireMinutes"]));
 
             var token = new JwtSecurityToken(
-                issuer: Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                audience: Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+                issuer: _configuration["JwtIssuer"],
+                audience: _configuration["JwtAudience"],
                 claims: claims,
                 expires: expires,
                 signingCredentials: creds

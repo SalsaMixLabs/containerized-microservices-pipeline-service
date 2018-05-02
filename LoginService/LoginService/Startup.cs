@@ -28,7 +28,7 @@ namespace LoginService
         {
             Configuration = configuration;
 
-            string appInsightsKey = Environment.GetEnvironmentVariable("APP_INSIGHTS_KEY");
+            string appInsightsKey = Configuration["ApplicationInsights:InstrumentationKey"]
             _telemetryClient = new TelemetryClient(new TelemetryConfiguration(appInsightsKey));
             _telemetryClient.TrackEvent("Login service started.");
         }
@@ -38,7 +38,7 @@ namespace LoginService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             if (connectionString == "DataSource=app.db")
             {
@@ -56,11 +56,11 @@ namespace LoginService
 
             _telemetryClient.TrackTrace($"connection string: '{connectionString}'"); // Need to debug secrets in K8s. TODO: remove before releasing to production.
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JWT_KEY")))
+            if (string.IsNullOrEmpty(Configuration["JwtKey"]))
             {
                 try
                 {
-                    Environment.GetEnvironmentVariable("JWT_KEY");
+                    Configuration["JwtKey"] = GetSecret("token-sign-key");
                 }
                 catch(Exception x) // until secrets work end-to-end have plan B
                 {
@@ -77,7 +77,7 @@ namespace LoginService
             {
                 options.AddPolicy("AllowSpecificOrigin", builder =>                
                     builder
-                        .WithOrigins(Environment.GetEnvironmentVariable("CORS_ORIGINS"))
+                                  .WithOrigins(Configuration["CorsOrigins"])
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                 );
@@ -112,9 +112,9 @@ namespace LoginService
                     cfg.SaveToken = true;
                     cfg.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                        ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"))),
+                        ValidIssuer = Configuration["JwtIssuer"],
+                        ValidAudience = Configuration["JwtAudience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"])),
                         ClockSkew = TimeSpan.FromMinutes(5)
                     };
                 });
@@ -149,7 +149,7 @@ namespace LoginService
         {
             using (var kv = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(GetTokenAsync)))
             {
-                var sec = kv.GetSecretAsync($"{Environment.GetEnvironmentVariable("SECRETS_VAULT_URL")}/secrets/{secretName}").Result;
+                var sec = kv.GetSecretAsync($"{Configuration["SecretsVaultUrl"]}/secrets/{secretName}").Result;
 
                 return sec.Value;
             }
@@ -163,10 +163,13 @@ namespace LoginService
              * /secrets/secrets/mt-aad-password
              * In dev, create the file with the password and point AadPasswordFilePath to it.
              */
-            string aadPassword = await File.ReadAllTextAsync(Environment.GetEnvironmentVariable("AAD_PASS_FILE_PATH"));
 
+
+
+
+            string aadPassword = await File.ReadAllTextAsync(Configuration["AadPasswordFilePath"]);
             var authContext = new AuthenticationContext(authority);
-            var clientCred = new ClientCredential(Environment.GetEnvironmentVariable("AAD_APP_ID"), aadPassword);
+            var clientCred = new ClientCredential(Configuration["AadAppId"], aadPassword);
             var result = await authContext.AcquireTokenAsync(resource, clientCred);
 
             if (result == null)
