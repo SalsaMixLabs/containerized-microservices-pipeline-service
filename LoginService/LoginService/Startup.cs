@@ -28,7 +28,7 @@ namespace LoginService
         {
             Configuration = configuration;
 
-            string appInsightsKey = Configuration["ApplicationInsights:InstrumentationKey"]
+            string appInsightsKey = Configuration["ApplicationInsights:InstrumentationKey"];
             _telemetryClient = new TelemetryClient(new TelemetryConfiguration(appInsightsKey));
             _telemetryClient.TrackEvent("Login service started.");
         }
