@@ -32,10 +32,8 @@ service:
 configs:
   - name: TEST_VAL_KEY
     key: testdata
-  - name: CONNECTION_STRING
-    key: ConnectionString
   - name: APP_INSIGHTS_KEY
-    key: ApplicationInsightsKey
+    key: ApplicationInsights__InstrumentationKey
   - name: JWT_KEY
     key: JwtKey
   - name: JWT_ISSUER
