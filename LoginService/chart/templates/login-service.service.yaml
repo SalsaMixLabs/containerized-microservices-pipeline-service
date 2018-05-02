@@ -1,18 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "microservice-service-deployment.fullname" . }}-service
+  name: {{ .Values.appName }}-{{ .Values.env }}-svc
   labels:
-    app: {{ template "microservice-service-deployment.name" . }}
+    app: {{ .Values.appName }}
+    env: {{ .Values.env }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   selector:
-    app: {{ template "microservice-service-deployment.name" . }}
-    release: {{ .Release.Name }}
-  ports:
+    app: {{ .Values.appName }}
+    {{ if eq .Values.env "canary" -}}
+    env: {{ .Values.env }}
+    {{- end }}  ports:
   - port: {{ .Values.service.port }}
     targetPort: {{ .Values.service.targetPort }}
     protocol: TCP
