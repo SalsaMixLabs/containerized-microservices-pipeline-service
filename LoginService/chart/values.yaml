@@ -6,8 +6,8 @@ app:
   replicaCount: 3
   image:
     repository: acrmicrok8eastus.azurecr.io # ACR Login Server
-    imageName: lizmttest 
-    tag: latest
+    imageName: containerized-microservices-pipeline-service
+    tag: canary
     pullPolicy: Always
   imagePullSecrets: acr-credentials
   cpu: "500m"
