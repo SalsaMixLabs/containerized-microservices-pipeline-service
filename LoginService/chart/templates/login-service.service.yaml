@@ -12,8 +12,9 @@ spec:
     app: {{ .Values.appName }}
     {{ if eq .Values.env "canary" -}}
     env: {{ .Values.env }}
-    {{- end }}  ports:
-  - port: {{ .Values.service.port }}
-    targetPort: {{ .Values.service.targetPort }}
-    protocol: TCP
-    name: http
+    {{- end }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
