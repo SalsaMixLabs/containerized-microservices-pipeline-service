@@ -32,9 +32,6 @@ spec:
             protocol: {{ .Values.app.port.protocol }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
-        resources:
-          requests:
-            cpu: {{ .Values.app.cpu }}
         volumeMounts:
         - name: secrets
           mountPath: /secrets
