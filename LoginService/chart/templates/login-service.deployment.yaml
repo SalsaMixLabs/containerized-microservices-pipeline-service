@@ -26,6 +26,14 @@ spec:
       - name: {{ .Chart.Name }}
         image: {{ .Values.app.image.repository }}/{{ .Values.app.image.imageName }}:{{ .Values.app.image.tag }}
         imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+        env:
+        {{- range $index, $item := .Values.configs }}  #looping through values in ConfigMap
+          - name: {{ $item.name }}
+            valueFrom:
+              configMapKeyRef:
+                name: configs
+                key: {{ $item.key }}
+        {{- end }}
         ports:
           - name: {{ .Values.app.port.name }}
             containerPort: {{ .Values.app.port.containerPort }}

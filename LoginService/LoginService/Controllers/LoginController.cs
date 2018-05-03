@@ -62,7 +62,7 @@ namespace LoginService.Controllers
 
                 var result = new ApiUserModel { Token = token, Id = appUser.Id, UserName = appUser.UserName, Email = appUser.Email };
 
-                _telemetryClient.TrackEvent("Successfull login.");
+                _telemetryClient.TrackEvent("Successful login.");
 
                 return Ok(result);
             }
@@ -75,7 +75,6 @@ namespace LoginService.Controllers
         [HttpGet("{value}")]
         public string Get(string value)
         {
-            //Test method to troubleshoot connectivity. Will be removed once CI/CD with ACR works.
             return "Echo > " + value;
         }
 
