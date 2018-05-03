@@ -12,21 +12,17 @@ COPY . .
 WORKDIR /app/LoginService
 RUN dotnet build
 
-FROM build AS testrunner
-WORKDIR /app/Tests
-ENTRYPOINT ["dotnet", "test", "--logger:trx"]
-
+# run tests
 FROM build AS test
 WORKDIR /app/Tests
 RUN dotnet test
 
+# generate final artifacts
 FROM build AS publish
 WORKDIR /app/LoginService
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o out /p:PublishWithAspNetCoreTargetManifest="false"
 
-# COPY ./LoginService ./
-# RUN dotnet publish -c Debug -o compiledOutput
-
+# create final image
 FROM microsoft/dotnet:2.0-runtime AS runtime
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://*:4201
