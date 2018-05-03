@@ -119,7 +119,6 @@ namespace LoginService
                 });
 
             services.AddApplicationInsightsTelemetry(Configuration);
-            //TODO: Figure out how to use ConfigMaps with App Insights Telemetry
 
             services.AddMvc();
         }
