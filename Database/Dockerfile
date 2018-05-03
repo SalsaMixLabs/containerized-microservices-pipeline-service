@@ -7,7 +7,6 @@ EXPOSE 1433
 
 # Copy working files
 WORKDIR /usr/src
-COPY createdb.sql .
 COPY entrypoint.sh .
 
 CMD [ "/bin/bash", "./entrypoint.sh" ]

@@ -1,0 +1,30 @@
+# Default values for microservice-service-deployment.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+app:
+  replicaCount: 3
+  image:
+    repository: acrmicrok8eastus.azurecr.io # ACR Login Server
+    imageName: containerized-microservices-pipeline-service
+    tag: canary
+    pullPolicy: Always
+  imagePullSecrets: acr-credentials
+  cpu: "500m"
+
+autoScale:
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+
+hexadite:
+  image:
+    repository: acrmicrok8eastus.azurecr.io
+    imageName: hexadite
+    tag: latest
+  keyVault: https://microk8-deploy-kv.vault.azure.net/
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4201

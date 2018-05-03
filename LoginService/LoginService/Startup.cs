@@ -22,14 +22,15 @@ namespace LoginService
 {
     public class Startup
     {
-        private readonly TelemetryClient TelemetryClient;
+        private readonly TelemetryClient _telemetryClient;
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
 
             string appInsightsKey = Configuration["ApplicationInsights:InstrumentationKey"];
-            TelemetryClient = new TelemetryClient(new TelemetryConfiguration(appInsightsKey));
+            _telemetryClient = new TelemetryClient(new TelemetryConfiguration(appInsightsKey));
+            _telemetryClient.TrackEvent("Login service started.");
         }
 
         public IConfiguration Configuration { get; }
@@ -53,7 +54,7 @@ namespace LoginService
                 services.AddDbContext<ApplicationDbContext>((options) => options.UseSqlServer(connectionString));
             }
 
-            TelemetryClient.TrackTrace($"connection string: '{connectionString}'"); // Need to debug secrets in K8s. TODO: remove before releasing to production.
+            _telemetryClient.TrackTrace($"connection string: '{connectionString}'"); // Need to debug secrets in K8s. TODO: remove before releasing to production.
 
             if (string.IsNullOrEmpty(Configuration["JwtKey"]))
             {
@@ -63,6 +64,8 @@ namespace LoginService
                 }
                 catch(Exception x) // until secrets work end-to-end have plan B
                 {
+                    _telemetryClient.TrackException(x);
+
                     Configuration["JwtKey"] = Guid.NewGuid().ToString();
                 }
             }
@@ -125,6 +128,13 @@ namespace LoginService
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var dbInitializer = new DbInitializer(serviceScope.ServiceProvider);
+                dbInitializer.ApplyMigrationsAsync().Wait();
+                dbInitializer.SeedDataAsync().Wait();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

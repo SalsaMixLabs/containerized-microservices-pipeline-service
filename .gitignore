@@ -287,3 +287,4 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 /LoginService/LoginService/secrets/*
+/LoginService/LoginService/app.db

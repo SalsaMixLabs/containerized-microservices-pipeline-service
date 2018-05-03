@@ -1,4 +1,5 @@
 ﻿using LoginService.Models;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,7 @@ namespace LoginService.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly TelemetryClient _telemetryClient = new TelemetryClient();
 
         public AccountController(UserManager<ApplicationUser> userManager)
         {
@@ -69,6 +71,8 @@ namespace LoginService.Controllers
             }
 
             ApiUserModel response = new ApiUserModel { Email = user.Email, Id = user.Id, UserName = user.UserName };
+
+            _telemetryClient.TrackEvent("User created.");
 
             return Ok(response);
         }
@@ -127,7 +131,7 @@ namespace LoginService.Controllers
         /// <param name="id">Id of the account to be deleted.</param>
         /// <returns>Operation status.</returns>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = _userManager.Users.SingleOrDefault(r => r.Id == id);
