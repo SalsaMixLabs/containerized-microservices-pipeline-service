@@ -76,8 +76,7 @@ namespace LoginService
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin", builder =>                
-                    builder
-                                  .WithOrigins(Configuration["CorsOrigins"])
+                    builder.WithOrigins(Configuration["CorsOrigins"])
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                 );
