@@ -1,23 +1,26 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "microservice-service-deployment.fullname" . }}-deployment
+  name: "{{ .Values.appName }}-{{ .Values.env }}"
   labels:
-    app: {{ template "microservice-service-deployment.name" . }}
+    app: {{ .Values.appName }}
+    env: {{ .Values.env }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    version: {{ .Values.app.image.tag }}
 spec:
   replicas: {{ .Values.app.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "microservice-service-deployment.name" . }}
-      release: {{ .Release.Name }}
+      app: {{ .Values.appName }}
+      env: {{ .Values.env }}
   template:
     metadata:
       labels:
-        app: {{ template "microservice-service-deployment.name" . }}
+        app: {{ .Values.appName }}
+        env: {{ .Values.env }}
         release: {{ .Release.Name }}
+        version: {{ .Values.app.image.tag }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -32,17 +35,16 @@ spec:
                 key: {{ $item.key }}
         {{- end }}
         ports:
-          - name: http
-            containerPort: 4201
-            protocol: TCP
+          - name: {{ .Values.app.port.name }}
+            containerPort: {{ .Values.app.port.containerPort }}
+            protocol: {{ .Values.app.port.protocol }}
         resources:
-          requests:
-            cpu: {{ .Values.app.cpu }}
+{{ toYaml .Values.resources | indent 12 }}
         volumeMounts:
         - name: secrets
           mountPath: /secrets
           readOnly: true
-            
+
       initContainers:
       - name: keyvault-agent
         image: {{ .Values.hexadite.image.repository }}/{{ .Values.hexadite.image.imageName }}:{{ .Values.hexadite.image.tag }}
@@ -61,7 +63,7 @@ spec:
         - name: host-sp
           mountPath: /host/azure.json
           readOnly: true
-          
+
       imagePullSecrets:
         - name: {{ .Values.app.imagePullSecrets }}
 
