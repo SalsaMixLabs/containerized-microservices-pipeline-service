@@ -11,6 +11,7 @@ configmap:
   jwtKey: olji4eoj30p8km4poij4mk520-jw3j
   omsWorkspaceId: 06cebcb7-1a47-4d43-a9a3-8bb950ceec16
   secretsVaultUrl: https://ivanbny-mt-svc-kv.vault.azure.net
+  MtConnectionString:
 
 app:
   replicaCount: 3

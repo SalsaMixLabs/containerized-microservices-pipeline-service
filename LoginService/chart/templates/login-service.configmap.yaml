@@ -16,4 +16,5 @@ data:
   Logging.IncludeScopes: "false"
   OMS.WorkspaceID: "{{ .Values.configmap.omsWorkspaceId }}"
   SecretsVaultUrl: "{{ .Values.configmap.secretsVaultUrl }}"
+  MtConnectionString: "{{ .Values.configmap.MtConnectionString}} "
   
