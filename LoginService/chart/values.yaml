@@ -39,7 +39,7 @@ configs:
   - name: TEST_VAL_KEY
     key: testdata
   - name: APP_INSIGHTS_KEY
-    key: ApplicationInsights__InstrumentationKey
+    key: ApplicationInsights.InstrumentationKey
   - name: JWT_KEY
     key: JwtKey
   - name: JWT_ISSUER
