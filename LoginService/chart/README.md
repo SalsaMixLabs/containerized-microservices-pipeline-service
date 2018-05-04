@@ -28,3 +28,22 @@ tiller-deploy-677436516-cq73w                   1/1       Running   0          2
     ```
     helm install /LoginService/chart -n login-service
     ```
+
+# Using Helm for Configuration Values
+Helm leverages configmaps in order to define configuration parameters. These values must be manually configured in the values.yaml file. The steps to obtain these values are shown below.
+
+## Values to be Changed
+1. aadAppId
+  a. From App registrations in Azure Active Directory, select your application.
+  b. In the Overview blade, the Application ID is the value you need
+2. appInsightsKey
+  a. From your "Application Insights" resource, click on the overview blade, and use the Instrumentation Key
+3. omsWorkspaceId
+  a. Run the following command, and the output is your ID:
+  
+```
+WSID=$(az resource show --resource-group loganalyticsrg --resource-type Microsoft.OperationalInsights/workspaces --name containerized-loganalyticsWS | grep customerId | sed -e 's/.*://')
+```
+
+4. secretsVaultUrl
+  a. Navigate to your Key Vault in the Azure portal, and on the overview blade, copy the "DNS Name", and this is your secrets vault URL.
