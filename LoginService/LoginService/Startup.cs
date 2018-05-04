@@ -65,7 +65,6 @@ namespace LoginService
                 catch(Exception x) // until secrets work end-to-end have plan B
                 {
                     _telemetryClient.TrackException(x);
-
                     Configuration["JwtKey"] = Guid.NewGuid().ToString();
                 }
             }
@@ -77,8 +76,7 @@ namespace LoginService
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin", builder =>                
-                    builder
-                        .WithOrigins(Configuration["CorsOrigins"])
+                    builder.WithOrigins(Configuration["CorsOrigins"])
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                 );
@@ -163,8 +161,11 @@ namespace LoginService
              * /secrets/secrets/mt-aad-password
              * In dev, create the file with the password and point AadPasswordFilePath to it.
              */
-            string aadPassword = await File.ReadAllTextAsync(Configuration["AadPasswordFilePath"]);
 
+
+
+
+            string aadPassword = await File.ReadAllTextAsync(Configuration["AadPasswordFilePath"]);
             var authContext = new AuthenticationContext(authority);
             var clientCred = new ClientCredential(Configuration["AadAppId"], aadPassword);
             var result = await authContext.AcquireTokenAsync(resource, clientCred);
