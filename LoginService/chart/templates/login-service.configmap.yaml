@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configs
+data:
+  AadAppId: 9b86d78b-3ee5-4502-a10b-46bd378b784f
+  AadPasswordFilePath: '"./secrets/secrets/mt-aad-password"'
+  ApplicationInsights.InstrumentationKey: a50ad6fc-04a4-41b2-b597-85965be4cd6c
+  ApplicationInsightsKey: '"a50ad6fc-04a4-41b2-b597-85965be4cd6c"'
+  ConnectionString: '""'
+  CorsOrigins: '''*'''
+  JwtAudience: '''http://microsoft.com'''
+  JwtExpireMinutes: "30"
+  JwtExpiresMinutes: '''30'''
+  JwtIssuer: '''http://microsoft.com'''
+  JwtKey: olji4eoj30p8km4poij4mk520-jw3j
+  Logging.Console.LogLevel.Default: Warning
+  Logging.Debug.LogLevel.Default: Warning
+  Logging.IncludeScopes: "false"
+  OMS.WorkspaceID: '"06cebcb7-1a47-4d43-a9a3-8bb950ceec16"'
+  SecretsVaultUrl: "{{ .Values.configmap.secretsVaultUrl }}"
+  testdata: '"testing"'
