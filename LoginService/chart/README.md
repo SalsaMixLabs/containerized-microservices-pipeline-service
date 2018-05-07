@@ -18,19 +18,8 @@ tiller-deploy-677436516-cq73w                   1/1       Running   0          2
 ...
 ```
 
-# Deploy App Helm Chart onto Cluster
-1. Ensure Azure Container Registry Credentials are deployed onto your cluster
-2. Install the helm chart
-    ```
-    helm install . -n <app-chart-name>
-    ```
-    **Note**: Use the relative path if you are running from the root directory.
-    ```
-    helm install /LoginService/chart -n login-service
-    ```
-
 # Using Helm for Configuration Values
-Helm leverages configmaps in order to define configuration parameters. These values must be manually configured in the values.yaml file. The steps to obtain these values are shown below.
+This service uses Kubernetes configmaps in order to define configuration parameters. These values must be manually configured in the values.yaml file, and helm will be used to deploy the configmap, as well as the deployment and service. The steps to obtain these values are shown below.
 
 ## Values to be Changed
 **aadAppId**
@@ -49,3 +38,14 @@ WSID=$(az resource show --resource-group loganalyticsrg --resource-type Microsof
 
 **secretsVaultUrl**
 1. Navigate to your Key Vault in the Azure portal, and on the overview blade, copy the "DNS Name", and this is your secrets vault URL.
+
+# Deploy App Helm Chart onto Cluster
+1. Ensure Azure Container Registry Credentials are deployed onto your cluster
+2. Install the helm chart
+    ```
+    helm install . -n <app-chart-name>
+    ```
+    **Note**: Use the relative path if you are running from the root directory.
+    ```
+    helm install /LoginService/chart -n login-service
+    ```

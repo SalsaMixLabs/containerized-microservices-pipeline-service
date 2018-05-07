@@ -10,7 +10,6 @@ data:
   JwtAudience: "http://microsoft.com"
   JwtExpireMinutes: "30"
   JwtIssuer: "http://microsoft.com"
-  JwtKey: "{{ .Values.configmap.jwtKey }}"
   Logging.Console.LogLevel.Default: Warning
   Logging.Debug.LogLevel.Default: Warning
   Logging.IncludeScopes: "false"

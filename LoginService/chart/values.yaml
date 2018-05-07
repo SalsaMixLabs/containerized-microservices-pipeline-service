@@ -6,11 +6,10 @@ appName: login-service
 env: production
 
 configmap:
-  aadAppId: 9b86d78b-3ee5-4502-a10b-46bd378b784f
-  appInsightsKey: a50ad6fc-04a4-41b2-b597-85965be4cd6c
-  jwtKey: olji4eoj30p8km4poij4mk520-jw3j
-  omsWorkspaceId: 06cebcb7-1a47-4d43-a9a3-8bb950ceec16
-  secretsVaultUrl: https://ivanbny-mt-svc-kv.vault.azure.net
+  aadAppId:
+  appInsightsKey:
+  omsWorkspaceId:
+  secretsVaultUrl:
   MtConnectionString:
 
 app:
