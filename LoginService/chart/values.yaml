@@ -2,15 +2,21 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+appName: login-service
+env: production
+
 app:
   replicaCount: 3
   image:
-    repository: acrmicroserviceswestus.azurecr.io # ACR Login Server
+    repository: acrmicrok8eastus.azurecr.io # ACR Login Server
     imageName: containerized-microservices-pipeline-service
-    tag: canary
+    tag: "1.0.1" # override on cli using --set app.image.tag=<version>
     pullPolicy: Always
+  port:
+    name: http
+    containerPort: 80
+    protocol: TCP
   imagePullSecrets: acr-credentials
-  cpu: "500m"
 
 autoScale:
   minReplicas: 3
@@ -19,12 +25,45 @@ autoScale:
 
 hexadite:
   image:
-    repository: acrmicroserviceswestus.azurecr.io
+    repository: acrmicrok8eastus.azurecr.io
     imageName: hexadite
     tag: latest
-  keyVault: https://microservices-deploy-kv.vault.azure.net/
+  keyVault: https://microk8-deploy-kv.vault.azure.net/
 
 service:
   type: ClusterIP
   port: 80
   targetPort: 4201
+
+configs:
+  - name: TEST_VAL_KEY
+    key: testdata
+  - name: APP_INSIGHTS_KEY
+    key: ApplicationInsights.InstrumentationKey
+  - name: JWT_KEY
+    key: JwtKey
+  - name: JWT_ISSUER
+    key: JwtIssuer
+  - name: JWT_AUDIENCE
+    key: JwtAudience
+  - name: CORS_ORIGINS
+    key: CorsOrigins
+  - name: SECRETS_VAULT_URL
+    key: SecretsVaultUrl
+  - name: AAD_PASS_FILE_PATH
+    key: AadPasswordFilePath
+  - name: AAD_APP_ID
+    key: AadAppId
+
+# The following Pod has two Containers. 
+# Each Container has a request of 0.25 cpu and 64MiB (226 bytes) of memory. 
+# Each Container has a limit of 0.5 cpu and 128MiB of memory. 
+# You can say the Pod has a request of 0.5 cpu and 128 MiB of memory, and a limit of 1 cpu and 256MiB of memory.
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+

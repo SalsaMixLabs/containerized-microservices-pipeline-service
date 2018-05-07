@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ template "microservice-service-deployment.fullname" . }}-autoscaler
+  name: {{ .Values.appName }}-{{ .Values.env }}-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ template "microservice-service-deployment.fullname" . }}-deployment
+    name: {{ .Values.appName }}-{{ .Values.env }}
   minReplicas: {{ .Values.autoScale.minReplicas }}
   maxReplicas: {{ .Values.autoScale.maxReplicas }}
   targetCPUUtilizationPercentage: {{ .Values.autoScale.targetCPUUtilizationPercentage }}
