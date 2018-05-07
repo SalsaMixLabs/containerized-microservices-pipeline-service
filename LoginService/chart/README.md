@@ -18,10 +18,29 @@ tiller-deploy-677436516-cq73w                   1/1       Running   0          2
 ...
 ```
 
-# Using Helm for Configuration Values
-This service uses Kubernetes configmaps in order to define configuration parameters. These values must be manually configured in the values.yaml file, and helm will be used to deploy the configmap, as well as the deployment and service. The steps to obtain these values are shown below.
+# Update Helm Values
+Certain configuration values must be manually added to the [values.yaml](values.yaml) file so that helm can deploy the deployments, services, and configmaps properly. The steps to obtain these values are shown below.
 
-## Values to be Changed
+## App-specific values
+These values should be changed in the app section:
+
+**image.repository**
+**image.imageName**
+**image.tag**
+**imagePullSecrets**
+
+## Hexadite values
+These values should be changed in the hexadite section:
+
+**image.repository**
+**keyVault**
+
+## Configmap values
+This service uses Kubernetes configmaps in order to define configuration parameters. The following variables should be changed in the configmap section:
+
+## Configmap values
+These values should be changed in the configs section of the [values.yaml](values.yaml) file.
+
 **aadAppId**
 1. From App registrations in Azure Active Directory, select your application.
 2. In the Overview blade, the Application ID is the value you need.
