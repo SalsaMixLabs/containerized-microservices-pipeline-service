@@ -5,6 +5,13 @@
 appName: login-service
 env: production
 
+configmap:
+  aadAppId:
+  appInsightsKey:
+  omsWorkspaceId:
+  secretsVaultUrl:
+  MtConnectionString:
+
 app:
   replicaCount: 3
   image:
