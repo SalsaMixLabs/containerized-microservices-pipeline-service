@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LoginService.Controllers
@@ -56,10 +58,24 @@ namespace LoginService.Controllers
                 return BadRequest("Failed: HTTP request body is required.");
             }
 
-            if (model.Password == null)
+            var (isValid, message) = ValidateEmailName(model.Email);
+            if (!isValid)
             {
-                return BadRequest("Failed: Password is required.");
+                return BadRequest(message);
             }
+
+            (isValid, message) = ValidatePassword(model.Password);
+            if (!isValid)
+            {
+                return BadRequest(message);
+            }
+
+            (isValid, message) = ValidateUserName(model.UserName);
+            if (!isValid)
+            {
+                return BadRequest(message);
+            }
+
 
             var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
 
@@ -75,6 +91,83 @@ namespace LoginService.Controllers
             _telemetryClient.TrackEvent("User created.");
 
             return Ok(response);
+        }
+
+        /// <summary>
+        ///     Placeholder to put policy on email name validation.  
+        ///     
+        ///     This uses the built in MailAddress validation from .Net
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns> true and "" if it is a valid email or false and a user message if it is not</returns>
+        private (bool isValid, string message) ValidateEmailName(string email)
+        {
+            //
+            //  the MailAddress object doesn't like "" or null's
+            if (email == "" || email == null)
+                return (false, "email can't be blank");
+            try
+            {
+                MailAddress m = new MailAddress(email);
+
+                return (true, "");
+            }
+            catch (FormatException e)
+            {
+                return (false, e.ToString());
+            }
+        }
+        /// <summary>
+        ///     Apply password policy.  In this demo, it calls the PasswordAdvisor class located below and 
+        ///     rejects any password that isn't at least "medium" strength.  In a production system, these
+        ///     strings would be loaded dynamically and localized.
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+
+        private (bool isValid, string message) ValidatePassword(string password)
+        {
+            var passwordStrength = PasswordAdvisor.CheckStrength(password);
+            switch (passwordStrength)
+            {
+                case PasswordScore.Blank:
+                    return (false, "No blank passwords");
+                case PasswordScore.VeryWeak:
+                    return (false, "This is a very weak password.  Make it longer and use at least one Upper Case chacter and at least one special character");
+                case PasswordScore.Weak:
+                    return (false, "This is a weak password.  Make it longer and use at least one Upper Case chacter and at least one special character");
+                case PasswordScore.Medium:
+                    break;
+                case PasswordScore.Strong:
+                    break;
+                case PasswordScore.VeryStrong:
+                    break;
+                default:
+                    break;
+            }
+
+            return (true, "");
+        }
+
+
+
+        /// <summary>
+        ///     Apply username policy.  We ensure that it is at least 3 characters long.
+        ///     In production we would also check to ensure it doesn't exist.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+
+        private (bool isValid, string message) ValidateUserName(string userName)
+        {
+
+            string error = "usernames must be at least 3 characters long";
+            if (userName == null || userName == "")
+                return (false, error);
+            if (userName.Length < 4)
+                return (false, error);
+
+            return (true, "");
         }
 
         /// <summary>
@@ -98,7 +191,7 @@ namespace LoginService.Controllers
             }
 
             if (!string.IsNullOrEmpty(model.NewPassword))
-            {                
+            {
                 var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
                 if (!changePasswordResult.Succeeded)
                 {
@@ -150,5 +243,51 @@ namespace LoginService.Controllers
 
             return Ok();
         }
+    }
+
+    /*
+     *  support for password strength detection
+     *  
+    */
+
+    public enum PasswordScore
+    {
+        Blank = 0,
+        VeryWeak = 1,
+        Weak = 2,
+        Medium = 3,
+        Strong = 4,
+        VeryStrong = 5
+    }
+
+    public class PasswordAdvisor
+    {
+        public static PasswordScore CheckStrength(string password)
+        {
+            if (password == "" || password == null)
+                return PasswordScore.Blank;
+
+            int score = 0;
+
+            if (password.Length < 1)
+                return PasswordScore.Blank;
+            if (password.Length < 4)
+                return PasswordScore.VeryWeak;
+
+            if (password.Length >= 8)
+                score++;
+            if (password.Length >= 12)
+                score++;
+            if (Regex.Match(password, @"\d", RegexOptions.None).Success) // has at least one number
+                score++;
+            if (Regex.Match(password, @"(?=.*[A-Z])(?=.*[a-z])", RegexOptions.None).Success)
+                score++;
+            if (Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.None).Success)
+                score++;
+
+            return (PasswordScore)score;
+        }
+
+
     }
 }

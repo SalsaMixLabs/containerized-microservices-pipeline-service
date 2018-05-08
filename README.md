@@ -26,7 +26,9 @@ The Database folder container scripts and files required to develop on the datab
 
 ### Run the database in a container
 
-- (Optional) Create the  image `docker build -t backend .`. Make sure you are in the `Database` folder.
+- (Optional) Create the  image `docker build -t backend .`
+    - DO NOT: forget the trailing "."
+    - Make sure you are in the `Database` folder.
 - Run the image in a Docker container: `docker run -p 1433:1433 --rm -it backend`
 
 ## Middle Tier - Login Service

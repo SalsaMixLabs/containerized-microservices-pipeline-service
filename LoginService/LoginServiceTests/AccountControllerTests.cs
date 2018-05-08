@@ -117,6 +117,57 @@ namespace LoginServiceTests
         }
 
         [TestMethod]
+        public async Task AccountControllerTestCreateWeakPassword()
+        {
+            var target = new AccountController(UserManager);
+
+            var request = new ApiUserModel
+            {
+                Password = "123",
+                UserName = Guid.NewGuid().ToString(),
+                Email = $"{Guid.NewGuid()}@host.com",
+            };
+
+            var response = (BadRequestObjectResult)await target.Post(request);
+
+            Assert.AreEqual(400, response.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task AccountControllerTestCreateWeakPasswordNoCapsOrSpecials()
+        {
+            var target = new AccountController(UserManager);
+
+            var request = new ApiUserModel
+            {
+                Password = "12345678",
+                UserName = Guid.NewGuid().ToString(),
+                Email = $"{Guid.NewGuid()}@host.com",
+            };
+
+            var response = (BadRequestObjectResult)await target.Post(request);
+
+            Assert.AreEqual(400, response.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task AccountControllerTestCreateWeakShortUsername()
+        {
+            var target = new AccountController(UserManager);
+
+            var request = new ApiUserModel
+            {
+                Password = "ABCdef123!@#",
+                UserName = "a",
+                Email = $"{Guid.NewGuid()}@host.com",
+            };
+
+            var response = (BadRequestObjectResult)await target.Post(request);
+
+            Assert.AreEqual(400, response.StatusCode);
+        }
+
+        [TestMethod]
         public async Task AccountControllerTestCreateNoUsername()
         {
             var target = new AccountController(UserManager);
