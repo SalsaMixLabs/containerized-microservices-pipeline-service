@@ -11,8 +11,6 @@ configmap:
   aadAppId:
   # Application Insights Key
   appInsightsKey:
-  # Log Analytics OMS Workspace ID
-  omsWorkspaceId:
   # Azure Key Vault URL
   secretsVaultUrl:
   # SQL Server connection string
@@ -24,7 +22,7 @@ app:
   replicaCount: 3
   image:
     # ACR Server URL
-    repository: acrmicrok8seastus.azurecr.io
+    repository: acrmicrok8eastus.azurecr.io
     imageName: containerized-microservices-pipeline-service
     tag: "1.0.8"
     pullPolicy: Always
@@ -53,7 +51,7 @@ autoScale:
 
 hexadite:
   image:
-    repository: acrmicrok8seastus.azurecr.io               # ACR Server URL
+    repository: acrmicrok8eastus.azurecr.io               # ACR Server URL
     imageName: hexadite
     tag: latest
   keyVault: https://microk8s-deploy-kv.vault.azure.net/    # Azure Key Vault URL
