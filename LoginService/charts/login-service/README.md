@@ -52,18 +52,27 @@ This service uses Kubernetes configmaps in order to define configuration paramet
 **configmap.appInsightsKey**
 
 1. From your "Application Insights" resource, click on the overview blade, and use the Instrumentation Key.
-  
-**configmap.omsWorkspaceId**
-
-1. Run the following command in your command prompt, and the output is your ID:
-
-```bash
-WSID=$(az resource show --resource-group loganalyticsrg --resource-type Microsoft.OperationalInsights/workspaces --name containerized-loganalyticsWS | grep customerId | sed -e 's/.*://')
-```
 
 **configmap.secretsVaultUrl**
 
 1. Navigate to your Key Vault in the Azure portal, and on the overview blade, copy the "DNS Name", and this is your secrets vault URL.
+
+**configmap.sqlConnectionString**
+
+SQL Server Connection String. 
+
+If you are using an Azure SQL instance, you can run this to get your connection string:
+
+```
+SQL_USER=<FILL IN>
+SQL_DB_NAME=<FILL IN>
+SQL_SERVER_NAME=<FILL IN>
+
+CONNECTION_STRING=`az sql db show-connection-string --client ado.net --auth-type SqlPassword --name $SQL_DB_NAME --server $SQL_SERVER_NAME`
+CONNECTION_STRING=${CONNECTION_STRING/<username>/$SQL_ADMIN}
+
+echo CONNECTION_STRING
+```
 
 ## Deploy Helm Chart onto Cluster
 
