@@ -58,12 +58,8 @@ hexadite:
 
 # Config map keys to set as environment variables in each container
 configs:
-  - name: TEST_VAL_KEY
-    key: testdata
   - name: APP_INSIGHTS_KEY
     key: ApplicationInsights.InstrumentationKey
-  - name: JWT_KEY
-    key: JwtKey
   - name: JWT_ISSUER
     key: JwtIssuer
   - name: JWT_AUDIENCE
