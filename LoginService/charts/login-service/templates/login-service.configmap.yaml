@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.configmap.name }}
 data:
   AadAppId: "{{ .Values.configmap.aadAppId }}"
-  AadPasswordFilePath: '"/secrets/secrets/mt-aad-password"'
+  AadPasswordFilePath: "{{ .Values.configmap.aadPasswordFilePath }}"
   ApplicationInsights.InstrumentationKey: "{{ .Values.configmap.appInsightsKey }}"
   CorsOrigins: "*"
   JwtAudience: "http://microsoft.com"
@@ -15,5 +15,4 @@ data:
   Logging.IncludeScopes: "false"
   OMS.WorkspaceID: "{{ .Values.configmap.omsWorkspaceId }}"
   SecretsVaultUrl: "{{ .Values.configmap.secretsVaultUrl }}"
-  MtConnectionString: "{{ .Values.configmap.MtConnectionString}}"
-  
+  SqlConnectionString: "{{ .Values.configmap.sqlConnectionString }}"

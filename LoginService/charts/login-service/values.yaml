@@ -15,14 +15,16 @@ configmap:
   omsWorkspaceId:
   # Azure Key Vault URL
   secretsVaultUrl:
-   # SQL Server connection string
-  MtConnectionString:
+  # SQL Server connection string
+  sqlConnectionString:
+  # File path to Azure Active Directory password file in container
+  aadPasswordFilePath: "/secrets/secrets/mt-aad-password"
 
 app:
   replicaCount: 3
   image:
     # ACR Server URL
-    repository: acrmicrok8eastus.azurecr.io
+    repository: acrmicrok8seastus.azurecr.io
     imageName: containerized-microservices-pipeline-service
     tag: "1.0.8"
     pullPolicy: Always
@@ -51,27 +53,29 @@ autoScale:
 
 hexadite:
   image:
-    repository: acrmicrok8eastus.azurecr.io               # ACR Server URL
+    repository: acrmicrok8seastus.azurecr.io               # ACR Server URL
     imageName: hexadite
     tag: latest
-  keyVault: https://microk8-deploy-kv.vault.azure.net/    # Azure Key Vault URL
+  keyVault: https://microk8s-deploy-kv.vault.azure.net/    # Azure Key Vault URL
 
 # Config map keys to set as environment variables in each container
 configs:
-  - name: APP_INSIGHTS_KEY
+  - name: ApplicationInsights__InstrumentationKey
     key: ApplicationInsights.InstrumentationKey
-  - name: JWT_ISSUER
+  - name: JwtIssuer
     key: JwtIssuer
-  - name: JWT_AUDIENCE
+  - name: JwtAudience
     key: JwtAudience
-  - name: CORS_ORIGINS
+  - name: CorsOrigins
     key: CorsOrigins
-  - name: SECRETS_VAULT_URL
+  - name: SecretsVaultUrl
     key: SecretsVaultUrl
-  - name: AAD_PASS_FILE_PATH
+  - name: AadPasswordFilePath
     key: AadPasswordFilePath
-  - name: AAD_APP_ID
+  - name: AadAppId
     key: AadAppId
+  - name: ConnectionStrings__DefaultConnection
+    key: SqlConnectionString    
 
 service:
   type: ClusterIP

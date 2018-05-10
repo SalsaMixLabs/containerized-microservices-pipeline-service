@@ -65,6 +65,10 @@ WSID=$(az resource show --resource-group loganalyticsrg --resource-type Microsof
 
 1. Navigate to your Key Vault in the Azure portal, and on the overview blade, copy the "DNS Name", and this is your secrets vault URL.
 
+**configmap.sqlConnectionString**
+
+SQL Server Connection String
+
 ## Deploy Helm Chart onto Cluster
 
 - Ensure Azure Container Registry Credentials are deployed onto your cluster as a Kubernetes secret with the same name that you set for ```app.imagePullSecrets``` in [values.yaml](values.yaml)
