@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: configs
+  name: {{ .Values.configmap.name }}
 data:
   AadAppId: "{{ .Values.configmap.aadAppId }}"
   AadPasswordFilePath: '"./secrets/secrets/mt-aad-password"'
@@ -15,5 +15,5 @@ data:
   Logging.IncludeScopes: "false"
   OMS.WorkspaceID: "{{ .Values.configmap.omsWorkspaceId }}"
   SecretsVaultUrl: "{{ .Values.configmap.secretsVaultUrl }}"
-  MtConnectionString: "{{ .Values.configmap.MtConnectionString}} "
+  MtConnectionString: "{{ .Values.configmap.MtConnectionString}}"
   

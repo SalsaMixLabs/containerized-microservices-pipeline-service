@@ -1,4 +1,4 @@
-# Default values for microservice-service-deployment.
+# Default values
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,24 +6,43 @@ appName: login-service
 env: production
 
 configmap:
+  name: configs
+  # Azure Active Directory App registration ID
   aadAppId:
+  # Application Insights Key
   appInsightsKey:
+  # Log Analytics OMS Workspace ID
   omsWorkspaceId:
+  # Azure Key Vault URL
   secretsVaultUrl:
+   # SQL Server connection string
   MtConnectionString:
 
 app:
   replicaCount: 3
   image:
-    repository: acrmicrok8eastus.azurecr.io # ACR Login Server
+    # ACR Server URL
+    repository: acrmicrok8eastus.azurecr.io
     imageName: containerized-microservices-pipeline-service
-    tag: "1.0.1" # override on cli using --set app.image.tag=<version>
+    tag: "1.0.8"
     pullPolicy: Always
   port:
     name: http
     containerPort: 80
     protocol: TCP
   imagePullSecrets: acr-credentials
+
+# Each Container has a request of 0.25 cpu and 64MiB (226 bytes) of memory. 
+# Each Container has a limit of 0.5 cpu and 128MiB of memory. 
+# If a pod has two containers, you can say the Pod has a request of 0.5 cpu 
+# and 128 MiB of memory, and a limit of 1 cpu and 256MiB of memory.
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
 
 autoScale:
   minReplicas: 3
@@ -32,16 +51,12 @@ autoScale:
 
 hexadite:
   image:
-    repository: acrmicrok8eastus.azurecr.io
+    repository: acrmicrok8eastus.azurecr.io               # ACR Server URL
     imageName: hexadite
     tag: latest
-  keyVault: https://microk8-deploy-kv.vault.azure.net/
+  keyVault: https://microk8-deploy-kv.vault.azure.net/    # Azure Key Vault URL
 
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 4201
-
+# Config map keys to set as environment variables in each container
 configs:
   - name: TEST_VAL_KEY
     key: testdata
@@ -62,15 +77,7 @@ configs:
   - name: AAD_APP_ID
     key: AadAppId
 
-# The following Pod has two Containers. 
-# Each Container has a request of 0.25 cpu and 64MiB (226 bytes) of memory. 
-# Each Container has a limit of 0.5 cpu and 128MiB of memory. 
-# You can say the Pod has a request of 0.5 cpu and 128 MiB of memory, and a limit of 1 cpu and 256MiB of memory.
-resources:
-  requests:
-    memory: "64Mi"
-    cpu: "250m"
-  limits:
-    memory: "128Mi"
-    cpu: "500m"
-
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4201
