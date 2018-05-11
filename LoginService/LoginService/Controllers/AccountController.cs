@@ -17,11 +17,15 @@ namespace LoginService.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISignIn _signIn;
+        private readonly IConfiguration _configuration;
         private readonly TelemetryClient _telemetryClient = new TelemetryClient();
 
-        public AccountController(UserManager<ApplicationUser> userManager)
+        public AccountController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _signIn = new SignIn(userManager, configuration);
         }
 
         /// <summary>
@@ -70,7 +74,9 @@ namespace LoginService.Controllers
                 return BadRequest(result.ToString());
             }
 
-            ApiUserModel response = new ApiUserModel { Email = user.Email, Id = user.Id, UserName = user.UserName };
+            var token = await _signIn.GenerateJwtTokenAsync(user);
+
+            ApiUserModel response = new ApiUserModel { Token = token,  Email = user.Email, Id = user.Id, UserName = user.UserName };
 
             _telemetryClient.TrackEvent("User created.");
 
