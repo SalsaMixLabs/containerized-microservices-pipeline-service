@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.configmap.name }}
+  name: {{ .Values.configmap.name }}-{{ .Values.env }}
+  # name: {{ template "configmapNameWithEnv" . }}
 data:
   AadAppId: "{{ .Values.configmap.aadAppId }}"
   AadPasswordFilePath: "{{ .Values.configmap.aadPasswordFilePath }}"
