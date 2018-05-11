@@ -90,6 +90,7 @@ namespace LoginServiceTests
             Assert.AreEqual(request.UserName, actual.UserName);
             Assert.AreEqual(request.Email, actual.Email);
             Assert.IsFalse(string.IsNullOrEmpty(actual.Id));
+            Assert.IsNotNull(actual.Token);
 
             var created = await Context.Users.SingleAsync();
             Assert.AreEqual(request.UserName, created.UserName);
