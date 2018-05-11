@@ -38,7 +38,7 @@ namespace LoginServiceTests
 
             user = await Context.Users.SingleAsync();
 
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var claims = new List<Claim>
             {
@@ -72,7 +72,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreate()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var request = new ApiUserModel
             {
@@ -90,6 +90,7 @@ namespace LoginServiceTests
             Assert.AreEqual(request.UserName, actual.UserName);
             Assert.AreEqual(request.Email, actual.Email);
             Assert.IsFalse(string.IsNullOrEmpty(actual.Id));
+            Assert.IsNotNull(actual.Token);
 
             var created = await Context.Users.SingleAsync();
             Assert.AreEqual(request.UserName, created.UserName);
@@ -103,7 +104,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreateNoPassword()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var request = new ApiUserModel
             {
@@ -119,7 +120,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreateNoUsername()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var request = new ApiUserModel
             {
@@ -135,7 +136,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreateEmptyUsername()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var request = new ApiUserModel
             {
@@ -152,7 +153,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreateNoEmail()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var request = new ApiUserModel
             {
@@ -168,7 +169,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreateInvalidEmail()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var request = new ApiUserModel
             {
@@ -185,7 +186,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreateEmptyBody()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var response = (BadRequestObjectResult)await target.Post(null);
 
@@ -195,7 +196,7 @@ namespace LoginServiceTests
         [TestMethod]
         public async Task AccountControllerTestCreateDuplicate()
         {
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var request = new ApiUserModel
             {
@@ -230,7 +231,7 @@ namespace LoginServiceTests
             userExist = await Context.Users.AnyAsync(u => u.Id == user2.Id);
             Assert.IsTrue(userExist);
 
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var result = (OkResult)await target.Delete(user1.Id);
             Assert.AreEqual(200, result.StatusCode);
@@ -259,7 +260,7 @@ namespace LoginServiceTests
 
             user = await Context.Users.SingleAsync();
 
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var claims = new List<Claim>
             {
@@ -304,7 +305,7 @@ namespace LoginServiceTests
 
             user = await Context.Users.SingleAsync();
 
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var claims = new List<Claim>
             {
@@ -343,7 +344,7 @@ namespace LoginServiceTests
 
             user = await Context.Users.SingleAsync();
 
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var claims = new List<Claim>
             {
@@ -381,7 +382,7 @@ namespace LoginServiceTests
 
             user = await Context.Users.SingleAsync();
 
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var claims = new List<Claim>
             {
@@ -427,7 +428,7 @@ namespace LoginServiceTests
 
             user = await Context.Users.SingleAsync();
 
-            var target = new AccountController(UserManager);
+            var target = new AccountController(UserManager, ConfigMock.Object);
 
             var claims = new List<Claim>
             {
