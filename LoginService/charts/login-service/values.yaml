@@ -13,8 +13,6 @@ configmap:
   appInsightsKey:
   # Azure Key Vault URL
   secretsVaultUrl:
-  # SQL Server connection string
-  sqlConnectionString:
   # File path to Azure Active Directory password file in container
   aadPasswordFilePath: "/secrets/secrets/mt-aad-password"
 
@@ -56,6 +54,9 @@ hexadite:
     tag: latest
   keyVault: https://microk8s-deploy-kv.vault.azure.net/    # Azure Key Vault URL
 
+connectionStringSecretName: db-secret
+connectionStringSecretKey: connection-string
+
 # Config map keys to set as environment variables in each container
 configs:
   - name: ApplicationInsights__InstrumentationKey
@@ -71,9 +72,7 @@ configs:
   - name: AadPasswordFilePath
     key: AadPasswordFilePath
   - name: AadAppId
-    key: AadAppId
-  - name: ConnectionStrings__DefaultConnection
-    key: SqlConnectionString    
+    key: AadAppId   
 
 service:
   type: ClusterIP

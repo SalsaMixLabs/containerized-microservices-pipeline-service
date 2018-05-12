@@ -40,9 +40,30 @@ These values should be changed in the ```hexadite``` section:
 - **hexadite.image.repository**
 - **hexadite.keyVault**
 
+## Deploy secrets
+
+This service uses SQL Server as the backing database. The connection string is deployed as a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret) for safety and to eliminate hardcoding sensitive data in the repository. Before running the command below, change ```<SQL SERVER CONNECTION STRING>``` with your connection string. **Note**: You must run this step prior to deploying this service.
+
+```bash
+kubectl create secret generic db-secret --from-literal=connection-string="<SQL SERVER CONNECTION STRING>"
+```
+
+If you are using an Azure SQL instance, you can get your connection string by running:
+
+```bash
+SQL_USER=<FILL IN>
+SQL_DB_NAME=<FILL IN>
+SQL_SERVER_NAME=<FILL IN>
+
+CONNECTION_STRING=`az sql db show-connection-string --client ado.net --auth-type SqlPassword --name $SQL_DB_NAME --server $SQL_SERVER_NAME`
+CONNECTION_STRING=${CONNECTION_STRING/<username>/$SQL_ADMIN}
+
+echo CONNECTION_STRING
+```
+
 ## Configmap values
 
-This service uses Kubernetes configmaps in order to define configuration parameters. The following variables should be changed in the ```configmap``` section of the [values.yaml](values.yaml) file:
+This service uses [Kubernetes ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) in order to define configuration parameters. The following variables should be changed in the ```configmap``` section of the [values.yaml](values.yaml) file:
 
 **configmap.aadAppId**
 
@@ -56,23 +77,6 @@ This service uses Kubernetes configmaps in order to define configuration paramet
 **configmap.secretsVaultUrl**
 
 1. Navigate to your Key Vault in the Azure portal, and on the overview blade, copy the "DNS Name", and this is your secrets vault URL.
-
-**configmap.sqlConnectionString**
-
-SQL Server Connection String. 
-
-If you are using an Azure SQL instance, you can run this to get your connection string:
-
-```
-SQL_USER=<FILL IN>
-SQL_DB_NAME=<FILL IN>
-SQL_SERVER_NAME=<FILL IN>
-
-CONNECTION_STRING=`az sql db show-connection-string --client ado.net --auth-type SqlPassword --name $SQL_DB_NAME --server $SQL_SERVER_NAME`
-CONNECTION_STRING=${CONNECTION_STRING/<username>/$SQL_ADMIN}
-
-echo CONNECTION_STRING
-```
 
 ## Deploy Helm Chart onto Cluster
 
