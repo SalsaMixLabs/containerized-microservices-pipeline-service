@@ -27,6 +27,11 @@ spec:
         image: {{ .Values.app.image.repository }}/{{ .Values.app.image.imageName }}:{{ .Values.app.image.tag }}
         imagePullPolicy: {{ .Values.app.image.pullPolicy }}
         env:
+          - name: ConnectionStrings__DefaultConnection
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.connectionStringSecretName }}
+                key: {{ .Values.connectionStringSecretKey }}
         #looping through values in ConfigMap
         {{- $configMapName := printf "%s-%s" .Values.configmap.name .Values.env -}}
         {{- range $index, $item := .Values.configs }}
