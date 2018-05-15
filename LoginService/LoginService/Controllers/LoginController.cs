@@ -77,7 +77,7 @@ namespace LoginService.Controllers
         [HttpGet("{value}")]
         public string Get(string value)
         {
-            return "Echo > " + value;
+            return "Echo > " + value + " LIVE FROM NEW YORK!!!";
         }
     }
 }
