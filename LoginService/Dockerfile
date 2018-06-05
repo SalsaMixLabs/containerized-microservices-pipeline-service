@@ -23,7 +23,7 @@ WORKDIR /app/LoginService
 RUN dotnet publish -c Release -o out /p:PublishWithAspNetCoreTargetManifest="false"
 
 # create final image
-FROM microsoft/dotnet:2.0-runtime AS runtime
+FROM microsoft/dotnet:2.1-runtime AS runtime
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://*:4201
 EXPOSE 4201
